@@ -34,6 +34,8 @@ public class AppRunner implements CommandLineRunner {
         futureList.add(gitHubLookupService.findUser("PivotalSoftware"));
         futureList.add(gitHubLookupService.findUser("CloudFoundry"));
         futureList.add(gitHubLookupService.findUser("Spring-Projects"));
+        futureList.add(gitHubLookupService.findUser("mojombo"));
+        futureList.add(gitHubLookupService.findUser("anotherjesse"));
 
         //Wait when all threads are done
         CompletableFuture<Void> allOf = CompletableFuture.allOf(futureList.toArray(new CompletableFuture[futureList.size()]));
