@@ -25,6 +25,7 @@ public class AsyncMethodApplication {
         executor.setCorePoolSize(5);
         executor.setMaxPoolSize(10);
         executor.setQueueCapacity(500);
+        executor.setKeepAliveSeconds(60);
         executor.setThreadNamePrefix("GithubLookup-");
         executor.initialize();
         return executor;
