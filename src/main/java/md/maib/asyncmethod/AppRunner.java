@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -28,18 +30,20 @@ public class AppRunner implements CommandLineRunner {
         long start = System.currentTimeMillis();
 
         //Run three threads
-        CompletableFuture<User> u1 = gitHubLookupService.findUser("PivotalSoftware");
-        CompletableFuture<User> u2 = gitHubLookupService.findUser("CloudFoundry");
-        CompletableFuture<User> u3 = gitHubLookupService.findUser("Spring-Projects");
+        List<CompletableFuture<User>> futureList = new ArrayList<>();
+        futureList.add(gitHubLookupService.findUser("PivotalSoftware"));
+        futureList.add(gitHubLookupService.findUser("CloudFoundry"));
+        futureList.add(gitHubLookupService.findUser("Spring-Projects"));
 
         //Wait when all threads are done
-        CompletableFuture.allOf(u1, u2, u3).join();
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futureList.toArray(new CompletableFuture[futureList.size()]));
+        allOf.join();
 
         //Print result
         long end = System.currentTimeMillis();
         LOGGER.info("Elapsed time: " + (end-start));
-        LOGGER.info("--> " + u1.get());
-        LOGGER.info("--> " + u2.get());
-        LOGGER.info("--> " + u3.get());
+
+        for (CompletableFuture future : futureList)
+            LOGGER.info("--> " + future.get());
     }
 }
